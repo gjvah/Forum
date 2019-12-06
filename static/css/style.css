@@ -1,0 +1,209 @@
+body {
+	background: white url(/static/images/main-bg.jpg) no-repeat;
+	background-size: cover;
+	font-family: 'Roboto', sans-serif;
+}
+a,
+a:visited {
+	color: #949494;
+	text-decoration: none;
+}
+a:hover {
+	color: #949494;
+	text-decoration: underline;
+}
+label {
+	color: #949494;
+	font-size: 15px;
+	display: block;
+	padding: 10px 0;
+}
+input {
+	border: none;
+	padding: 7px 10px;
+	border-radius: 30px;
+	border: 1px solid #d0d0d0;
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+	outline: none;
+}
+input[type="text"],
+textarea {
+	background-color: #eaeaea !important;
+}
+input:-internal-autofill-selected {
+	background-color: #eaeaea !important;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+	-webkit-box-shadow: 0 0 0px 1000px #eaeaea inset;
+	transition: background-color 5000s ease-in-out 0s;
+}
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+	border-radius: 30px;
+	border: none;
+	padding: 10px 24px;
+	cursor: pointer;
+}
+button,
+[type="button"],
+[type="reset"],
+[type="submit"]:hover {
+	border-radius: 10px;
+	-webkit-box-shadow: 1px 1px 4px -1px rgba(0, 0, 0, 0.46);
+	-moz-box-shadow: 1px 1px 4px -1px rgba(0, 0, 0, 0.46);
+	box-shadow: 1px 1px 4px -1px rgba(0, 0, 0, 0.46);
+}
+button,
+[type="submit"] {
+	background-color: #40aba1;
+	color: white;
+	text-shadow: 2px 2px 3px #000000;
+	border: 1px solid #d4d4d4;
+}
+main {
+	max-width: 1000px;
+	border: 1px solid #d3d3ff;
+	border-radius: 8px;
+	padding: 20px;
+	margin: 24px auto;
+	background: rgba(255, 255, 255, 0.55);
+	-webkit-box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.2);
+	box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.2);
+}
+#user-name {
+	color: #949494;
+}
+#login-box p {
+	margin: 0;
+	padding: 0;
+}
+#login-box button,
+#sign-up button {
+	margin-top: 20px;
+}
+.helptext {
+	display: block;
+	font-size: 12px;
+	margin-top: 10px;
+	margin-bottom: -11px;
+}
+#sign-up ul {
+	margin-top: 30px;
+	margin-bottom: -10px;
+}
+#sign-up li {
+	font-size: 12px;
+}
+.table {
+	display: table;
+	border-spacing: 6px;
+	padding: 20px;
+	border: 1px solid gainsboro;
+	width: 100%;
+	margin-bottom: 24px;
+}
+table th {
+	padding-bottom: 12px;
+	border-bottom: 1px solid #ada8a8;
+	padding-top: 13px;
+	font-size: 13px;
+	color: #727c96;
+	background: rgb(233, 233, 233);
+	background: linear-gradient(180deg, rgba(233, 233, 233, 1) 0%, rgba(203, 203, 203, 1) 100%);
+}
+table {
+	border: none;
+	border-collapse: collapse;
+	width: 100%;
+}
+table td {
+	border-left: 1px solid #efefef;
+	padding: 18px 22px;
+}
+table td:first-child {
+	border-left: none;
+}
+table tr {
+	background: rgb(255, 255, 255);
+	background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(233, 233, 233, 1) 100%);
+}
+tbody {
+	background-color: white;
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+	box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+}
+.center {
+	text-align: center;
+	font-size: 14px;
+	color: #6e7c96;
+}
+.staff,
+.admin,
+.user {
+	text-transform: uppercase;
+	font-size: 11px;
+}
+.staff {
+	color: #0fb5b1;
+}
+.admin {
+	color: #d41d1d;
+}
+.user {
+	color: #6e6e6e;
+}
+.active,
+.inactive {
+	font-size: 0;
+}
+.active:before,
+.inactive:before,
+.staff:before,
+.admin:before,
+.user:before {
+	display: inline-block;
+	background-size: 20px 20px;
+	background-repeat: no-repeat;
+	height: 20px;
+	width: 20px;
+	font-size: 12px;
+	content: "";
+	position: absolute;
+	margin-left: -30px;
+}
+.active:before {
+	background-image: url(../images/active.png);
+}
+.inactive:before {
+	background-image: url(../images/inactive.png);
+}
+.admin:before {
+	background-image: url(../images/admin.png);
+}
+.staff:before {
+	background-image: url(../images/staff.png);
+}
+.user:before {
+	background-image: url(../images/user.png);
+}
+.indent {
+	text-indent: 30px;
+	padding-left: 7px;
+	padding-right: 0px;
+}

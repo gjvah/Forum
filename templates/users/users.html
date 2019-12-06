@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+
+<h1>Users:</h1>
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Group</th>
+        <th>Active</th>
+        <th>Join Date</th>
+        <th>Last Login</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td class="center">{{ user }}</td>
+        <td class="center indent">
+            {% for group in user.groups.all %}
+            {% if group.name == 'Staff' %}
+            <span class="staff">{{ group }}</span>
+            {% elif group.name == 'Admin' %}
+            <span class="admin">{{ group }}</span>
+            {% elif group.name == 'Users'  %}
+            <span class="user">{{ group }}</span>
+            {% endif %}
+            {% endfor %}
+        </td>
+        <td class="center indent">
+            {% if user.is_active == True %}
+            <span class="active"> {{user.is_active }}</span>
+            {% elif user.is_active == False %}
+            <span class="inactive"> {{user.is_active }}</span>
+            {% endif %}
+        </td>
+        <td class="center">{{ user.date_joined.date }}</td>
+        <td class="center">{{ user.last_login.date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

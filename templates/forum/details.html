@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Details</title>
+    {% load static %}
+    <script src="{% static 'forum/js/script.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+</head>
+
+<body>{% if user.is_authenticated %}
+    <div id="menu-wrapper"></div>
+    <div id="menu-container">
+        <button type="button" class="menu"></button>
+        <div class="box">
+            <div class="box-inner">
+                <ul style="list-style-type:none">
+                    <li><a href="/forum" method="POST" class="menu-btn">Home</a></li>
+                    <li><a href="/forum/user/{{request.user.id}}" class="menu-btn">Profile</a></li>
+                </ul>
+
+
+            </div>
+        </div>
+    </div>
+    <h2>Hello, {{ request.user }}</h2>
+    <a href="/forum" method="POST" class="btn-1">Home</a>
+    <a href="/forum/user/{{request.user.id}}" class="btn-1">Profile</a>
+    <a href="{% url 'logout' %}" class="btn-1">Logout</a>
+    <br><br>
+    <div id="main">
+
+
+        <h1>{{ post_detail.title }}</h1>
+
+        <table class="table">
+            <tr>
+                <th>Item Name</th>
+
+
+                <th>Added By</th>
+                <th>Likes</th>
+                <th>Added On</th>
+                <th>{% if request.user == post_detail.post_author %}<a href="/forum/edit/{{ post_detail.id }}"
+                        class="btn-1">Edit</a> <a href="/forum/delete/{{ post_detail.id }}"
+                        class="btn-1 s-delete">Delete</a>
+                    {% endif %}
+                    {% for person in post_detail.trip_members.all %}
+
+                    {% if  request.user == person %}
+                    {% if request.user != post_detail.post_author %}
+                    <a href="/forum/unlike/{{ post_detail.id }}" class="btn-1 s-delete">unlike</a>
+                    {% endif %}
+                    {% endif %}
+
+                    {% empty %}
+                    {% if request.user != post_detail.post_author %}
+                    <a href="/forum/like/{{ post_detail.id }}" class="btn-1 green">Like</a>
+                    {% endif %}
+                    {% endfor %}
+
+
+                </th>
+
+            </tr>
+
+            <tr>
+                <td class="center">{{ post_detail.title }}</td>
+
+
+                <td class="center"><a href="/forum/user/{{post_detail.post_author.id}}"
+                        class="home-link-authors">{{ post_detail.post_author.first_name }}</a></td>
+                <td class="center"><span class="likes">{{ post_detail.liked_members.count }}</span></td>
+                <td class="center">{{ post_detail.created_at }}</td>
+
+                <td> </td>
+
+            </tr>
+
+        </table>
+        <div id="review-content">
+            <br>
+            {{ post_detail.body|safe }}
+        </div>
+        <div id="joined-users">
+            {% if post_detail.liked_members.count > 0 %}
+            <h3>{{ post_detail.title }} is liked by :<br></h3>
+            {% else %}
+            <br><br>
+            {% endif %}
+            {% for m in post_detail.liked_members.all %}
+            <p><a href="/forum/user/{{m.id}}" class="profile">{{m.first_name}}</a></p>
+            {% endfor %}
+
+        </div>
+
+
+        <table class="profile-comments-table details-comments">
+
+            <tr>
+                <th> </th>
+
+
+
+            </tr>
+            {% for c in comments reversed %}
+            {% if post_detail.id == c.post_id %}
+            <tr>
+                <td>
+                    <div class="by"><a href="/forum/user/{{c.comment_author.id}}"
+                            class="profile-link-comments">{{ c.comment_author.first_name }}</a>
+                        |
+                        <span class="dt">{{ c.created_at }}</span></div>
+                    <div id="text">{{ c.comment }}
+                    </div><br>
+
+                    <div id="comment-control">{% if request.user.id == c.comment_author.id %}
+                        <a href="/forum/delete_profile_comment/{{ c.id }}/{{ s.post_author.id }}"
+                            class="btn-1 s-delete">Delete</a>{% endif %}
+
+                    </div>
+
+                </td>
+
+
+
+            </tr>
+
+
+            {% endif %}
+            {% endfor %}
+            <td>
+                <div id="comments">
+                    <div class="comment-box">
+                        <h3>Comment on {{ post_detail.title }}:</h1>
+
+
+                            <form
+                                action="/forum/add_profile_comment/{{ post_detail.id }}/{{ post_detail.post_author.id }}"
+                                method="POST">
+                                {% csrf_token %}
+                                <textarea rows="4" cols="50" name="comment" required></textarea>
+                                <br>
+                                <input type="submit" value="Add Comment" class="btn-1 green">
+
+                            </form>
+                    </div>
+                </div>
+            </td>
+        </table>
+
+
+
+
+
+
+    </div>
+
+    {% else %}
+    <div id="login-box">
+        <div id="login-inner">
+            <span class="please-login">
+                You need to be logged in to see this page.
+                <a href="/"><span class="btn-1">Login</span></a></span>
+        </div>
+    </div>
+    {% endif %}
+    <script>
+        $(document).ready(function () {
+            $('#main').fadeIn('slow');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>forum</title>
+    {% load static %}
+    <script src="{% static 'forum/js/script.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+</head>
+
+<body>{% if user.is_authenticated %}
+    <div id="menu-wrapper"></div>
+    <div id="menu-container">
+        <button type="button" class="menu"></button>
+        <div class="box">
+            <div class="box-inner">
+                <ul style="list-style-type:none">
+                    <li><a href="/forum" method="POST" class="menu-btn">Home</a></li>
+                    <li><a href="/forum/user/{{request.user.id}}" class="menu-btn">Profile</a></li>
+                </ul>
+
+
+            </div>
+        </div>
+    </div>
+    <h2>Hello, {{ request.user }}</h2>
+    <a href="/forum" method="POST" class="btn-1">Home</a>
+    <a href="/forum/user/{{request.user.id}}" class="btn-1">Profile</a>
+    <a href="{% url 'logout' %}" class="btn-1">Logout</a>
+    <br><br>
+    <div id="main">
+        <table class="table">
+            <tr>
+                <th colspan="5">My Posts</th>
+            </tr>
+            {% for s in combined_posts reversed %}
+            <tr>
+
+                <td>
+                    <div class="post_controls">
+                        <div id="slideToggle" class="main_divs">
+                            <button class="slideDown"></button>
+                            <div class="slideDownHidden">
+
+
+                                {% if request.user.id == s.post_author.id %}<a href="/forum/edit/{{ s.id }}"
+                                    class="btn-1">Edit</a>
+                                <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+
+                                {% if  request.user == s.post_author %}
+                                {% if  request.user in s.stickied.all %}
+                                <a href="/forum/unstickied/{{ s.id }}" class="btn-1">Unsticky</a>
+                                {% else %}
+                                <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
+                                {% endif %}
+                                {% endif %}
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <span class="title-link"><a href="/forum/details/{{ s.id }}"
+                            class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
+                        {{ s.created_at }}</span>
+                </td>
+                <td class="center">Something</td>
+
+                <td class="center"><a href="/forum/user/{{s.post_author.id}}"
+                        class="home-link-authors">{{ s.post_author.first_name }}</a><span
+                        class="sub_title">Author</span> </td>
+                </td>
+                <td class="center">{{ s.comments.count }} <span class="sub_title">Comments</span> </td>
+                <td class="center"><span class="likes">{{ s.liked_members.count }}</span> <span
+                        class="sub_title">Likes</span></td>
+
+
+
+            </tr>
+
+            {% endfor %}
+        </table>
+        <a href="/forum/new" class="btn-1 green main-b">Add New Post</a>
+
+        <table class="table stickied">
+            <tr>
+                <th colspan="6">All Posts</th>
+
+            </tr>
+            {% for s in stickied reversed %}
+            <tr>
+                <td> {% if request.user.id == s.post_author.id %}
+                    <div class="post_controls">
+                        <div id="slideToggle" class="main_divs">
+                            <button class="slideDown"></button>
+                            <div class="slideDownHidden">
+
+
+                                <a href="/forum/edit/{{ s.id }}" class="btn-1">Edit</a>
+                                <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+
+                                {% if  request.user == s.post_author %}
+                                {% if  request.user in s.stickied.all %}
+                                <a href="/forum/unstickied/{{ s.id }}" class="btn-1">Unsticky</a>
+                                {% else %}
+                                <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
+                                {% endif %}
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+
+                    <span class="title-link"><a href="/forum/details/{{ s.id }}"
+                            class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
+                        {{ s.created_at }}</span>
+                </td>
+                <td class="center">Something</td>
+                <td class="center"><a href="/forum/user/{{s.post_author.id}}"
+                        class="home-link-authors">{{ s.post_author.first_name }}</a></td>
+                <td class="center">{{ s.comments.count }} <span class="sub_title">Comments</span> </td>
+                <td class="center"><span class="likes">{{ s.liked_members.count }}</span> <span
+                        class="sub_title">Likes</span></td>
+                <td class="right">
+
+
+
+
+                    {% if  request.user != s.post_author %}
+                    {% if  request.user in s.liked_members.all %}
+                    <a href="/forum/unlike/{{ s.id }}" class="btn-1">Unlike</a>
+                    {% else %}
+                    <a href="/forum/like/{{ s.id }}" class="btn-1 green">Like</a>
+                    {% endif %}
+                    {% endif %}
+
+
+                    {% if request.user == s.post_author.id %}<a href="/forum/edit/{{ s.id }}" class="btn-1">Edit</a> <a
+                        href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+                </td>
+
+
+            </tr>
+
+            {% endfor %}
+        </table>
+        <table class="table">
+
+            {% for s in unstickied reversed %}
+
+            <tr>
+                <td>
+
+                    {% if request.user == s.post_author %}
+                    <div class="post_controls">
+                        <div id="slideToggle" class="main_divs">
+                            <button class="slideDown"></button>
+                            <div class="slideDownHidden">
+
+                                {% if request.user.id == s.post_author.id %}<a href="/forum/edit/{{ s.id }}"
+                                    class="btn-1">Edit</a>
+                                <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+
+                                {% if  request.user == s.post_author %}
+                                {% if  request.user in s.stickied.all %}
+                                <a href="/forum/unstickied/{{ s.id }}" class="btn-1">Unsticky</a>
+                                {% else %}
+                                <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
+                                {% endif %}
+                                {% endif %}
+
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+
+                    <span class="title-link"><a href="/forum/details/{{ s.id }}"
+                            class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
+                        {{ s.created_at }}</span></td>
+                <td class="center">Something</td>
+
+                <td class="center"><a href="/forum/user/{{s.post_author.id}}"
+                        class="home-link-authors">{{ s.post_author.first_name }}</a></td>
+                <td class="center">{{ s.comments.count }} <span class="sub_title">Comments</span> </td>
+                <td class="center"><span class="likes">{{ s.liked_members.count }}</span> <span
+                        class="sub_title">Likes</span></td>
+                <td class="right">
+
+
+                    {% if  request.user != s.post_author %}
+                    {% if  request.user in s.liked_members.all %}
+                    <a href="/forum/unlike/{{ s.id }}" class="btn-1">Unlike</a>
+                    {% else %}
+                    <a href="/forum/like/{{ s.id }}" class="btn-1 green">Like</a>
+                    {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <div id="login-box">
+        <div id="login-inner">
+            <span class="please-login">
+                You need to be logged in to see this page.
+                <a href="/"><span class="btn-1">Login</span></a></span>
+        </div>
+    </div>
+    {% endif %}
+    <script>
+        $(document).ready(function () {
+            $('#main').fadeIn('slow');
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $('button.slideDown').click(function () {
+                if ($(this).siblings('.slideDownHidden').is(':hidden')) {
+                    $(this).siblings('.slideDownHidden').fadeIn().slideDown("fast");
+                } else {
+                    $(this).siblings('.slideDownHidden').fadeOut().slideUp('fast');
+                }
+            });
+            $(".menu").click(function () {
+                $(".box").animate({
+                    width: "toggle"
+                });
+            });
+            $('.menu').click(function () {
+                $('#menu-wrapper').fadeToggle('slow');
+            });
+
+        });
+    </script>
+
+
+
+</body>
+
+
+</html>
