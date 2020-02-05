@@ -1,0 +1,204 @@
+.discord-widget {
+	background-image: url(../images/discordbg.jpg) !important;
+	color: #d4d4d4 !important;
+	margin: 0 !important;
+	padding: 10px !important;
+	padding-top: 15px !important;
+	border: 0 !important;
+	font-size: 100% !important;
+	font-family: 'Roboto', sans-serif !important;
+	width: 300px !important;
+	font-weight: 100 !important;
+	border-radius: 0 0 8px 8px !important;
+	opacity: .95 !important;
+}
+.discord-fade {
+	display: none !important;
+}
+video#bgvid {
+	filter: grayscale(0.1) brightness(0.5) contrast(1.1);
+}
+.discord-join {
+	position: relative;
+	width: 85%;
+	font-size: 14px !important;
+	letter-spacing: 1px;
+	height: 35px;
+	text-align: center;
+	cursor: pointer;
+	margin: auto !important;
+	margin-top: 20px !important;
+	margin-bottom: 20px !important;
+	line-height: 32px !important;
+	z-index: 2;
+	color: white;
+	background-color: #bf0000 !important;
+	-webkit-box-shadow: 0px 0px 5px -1px rgba(0, 0, 0, 0.75) !important;
+	-moz-box-shadow: 0px 0px 5px -1px rgba(0, 0, 0, 0.75) !important;
+	box-shadow: 0px 0px 5px -1px rgba(0, 0, 0, 0.75) !important;
+	border-radius: 8px !important;
+	border: 1px solid #161616 !important;
+}
+.discord-channel {
+	font-weight: 300 !important;
+	font-size: 13px !important;
+	padding-top: 2px !important;
+	padding-bottom: 2px !important;
+	padding-left: 4px !important;
+}
+.discord-user {
+	font-size: 12px !important;
+	padding: 5px !important;
+}
+.discord-user-status {
+	top: 22px !important;
+	left: 21px !important;
+}
+.discord-allusers-toggle {
+	cursor: pointer;
+	font-size: 15px !important;
+	letter-spacing: 1px;
+	border: 3px solid #43b581 !important;
+	background: #43b581;
+	width: 70%;
+	border-radius: 14px;
+	margin: auto !important;
+	margin-top: 12px !important;
+	margin-bottom: 10px !important;
+	text-align: center;
+	padding-right: 27px !important;
+	color: white;
+	text-shadow: 1px 1px 7px rgba(0, 0, 0, 1) !important;
+}
+.discord-join a {
+	color: #ffffff !important;
+	text-shadow: 1px 1px 7px rgba(0, 0, 0, 1) !important;
+	text-transform: uppercase !important;
+}
+
+.discord-join:hover {
+	background-color: #43b581 !important;
+}
+
+.discord-join a:hover {
+	color: #fff !important;
+}
+#discord-banner {
+	display: block;
+	margin-bottom: -10px;
+	position: relative;
+	z-index: 1;
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+	box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+	background-image: url(../images/discord-banner.jpg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	width: 100%;
+	border-radius: 8px 8px 0 0;
+}
+#discord-banner img {
+	width: 100%;
+	height: auto;
+
+	border-radius: 8px 8px 0 0;
+}
+
+#wrapper {
+	display: none;
+	height: 0;
+	max-width: 1250px;
+	margin: auto;
+}
+.flex {
+	display: block !important;
+	padding: 30px;
+}
+#crks-discord-widget {
+	display: block;
+}
+.structural {
+	display: table;
+	background: none;
+	background-color: transparent;
+	width: 23%;
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+	position: fixed;
+	top: 193px;
+}
+.structural tr,
+.structural td,
+.structural tbody {
+	background: none;
+	margin: 0;
+	padding: 0;
+	box-shadow: none;
+}
+@media (max-width: 1000px) {
+	#wrapper {
+		flex-direction: column;
+	}
+	.structural {
+		width: 100%;
+		max-width: 500px;
+		margin: auto !important;
+		display: table;
+		padding: 0;
+		position: relative;
+		top: 16px;
+	}
+	.discord-widget {
+		width: 100% !important;
+		margin-bottom: 92px !important;
+	}
+	#main {
+		width: 100% !important;
+	}
+}
+@media (min-width: 1000px) {
+	.discord-widget {
+		overflow-y: scroll;
+		max-height: 83vh;
+	}
+}
+.discord-widget {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+.discord-widget::-webkit-scrollbar {
+	display: none;
+}
+#top {
+	margin-top: -100px;
+	position: absolute;
+	width: 0px;
+	height: 0px;
+	font-size: 0px !important;
+	padding: 0;
+}
+#link-to-top {
+	display: block;
+	position: fixed;
+	z-index: 2;
+	bottom: 10px;
+	margin-left: 10px;
+	-webkit-transition: all .2s ease;
+	-moz-transition: all .2s ease;
+	-ms-transition: all .2s ease;
+	-o-transition: all .2s ease;
+	transition: all .2s ease;
+}
+#link-to-top:hover {
+	bottom: 14px;
+}
+@media (max-width: 1000px) {
+	#link-to-top {
+		margin: auto;
+		left: 50%;
+		width: 60px;
+		margin-left: -30px;
+		transform: scale(.8);
+	}
+}

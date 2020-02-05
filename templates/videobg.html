@@ -1,0 +1,17 @@
+{% load static %}
+
+<video muted autoplay loop id="bgvid"
+    class="{% if post_detail.color == 'red' %}siege-bg{% elif post_detail.color == 'blue' %}gta-bg{% endif %}">
+    <source src="{% static 'forum/images/crks.mp4' %}"> </video>
+<style>
+    video#bgvid {
+        position: fixed;
+        right: 0;
+        top: 0;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        hevideoight: auto;
+        z-index: -100;
+    }
+</style>

@@ -1,211 +1,205 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'forum-base.html' %}
+{% block content %}
+{% include 'videobg.html' %}
+{% load avatar_tags %}
+{% load static %}
+<style>
+    .profile-btn {
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Profile</title>
-    {% load static %}
-    <script src="{% static 'forum/js/script.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-</head>
-
-<body>
-    {% if user.is_authenticated %}
-    <div id="menu-wrapper"></div>
-    <div id="menu-container">
-        <button type="button" class="menu"></button>
-        <div class="box">
-            <div class="box-inner">
-                <ul style="list-style-type:none">
-                    <li><a href="/forum" method="POST" class="menu-btn">Home</a></li>
-                    <li><a href="/forum/user/{{request.user.id}}" class="menu-btn">Profile</a></li>
-                </ul>
-
-
-            </div>
+    .profile-btn:hover {
+        background: #8c1c1c !important;
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
+</style>
+<div id="main">
+    <div id="gravatar-wrapper">
+        <div id="gravatar-image">
+            {% avatar user %}
         </div>
+
     </div>
-    <h2>Hello, {{ request.user }}</h2>
-    <a href="/forum" method="POST" class="btn-1">Home</a>
-    <a href="/forum/user/{{request.user.id}}" class="btn-1">Profile</a>
-    <a href="/logout_user" method="POST" class="btn-1">Logout</a>
-    <div id="main">
-
-
-        <h1>{{ user.first_name }}'s Post History</h1>
-        <br>
-        <table class="profile-table">
-            {% for s in posts reversed %}
-            <tr class="shadowed-tr">
-                <th>Item</th>
-
-                <th>Added By</th>
-                <th>Comments</th>
-                <th>Likes</th>
-                <th></th>
-
-            </tr>
-
-
-            <tr class="shadowed-tr">
-                <td class="left"><span class="title-link"><a href="/forum/details/{{ s.id }}"
-                            class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
-                        {{ s.created_at }}</span>
-                </td>
-
-                <td class="center"><a href="/forum/user/{{s.post_author.id}}"
-                        class="home-link-authors">{{ s.post_author.first_name }}</a></td>
-                <td class="center">{{ s.comments.count }}</td>
-                <td class="center"><span class="likes">{{ s.liked_members.count }}</span></td>
-                <td class="right"> <a href="/forum/details/{{ s.id }}" class="btn-1">View</a>
-                </td>
-
-            </tr>
-            <tr>
-                <td colspan="6" style="padding: 0; background: transparent;">
-
-                    <div id="review-content">
-                        <br><br>
-                        {{ s.body|safe }}
-                    </div>
-                    <div class="comment_controls">
-                        <div id="CommentsToggle" class="comment_divs">
-                            <button class="CslideDown">
-                                {% if s.comments.count > 0 %}
-
-
-
-                                View {{ s.comments.count }} Comments
-                                {% else %}
-                                Be the first to comment
-
-
-                                {% endif %}
-
-
-
-                            </button>
-                            <div class="CommentsSlideDownHidden">
-
-                                <table class="profile-comments-table">
-
-                                    <tr>
-                                        <th> </th>
-
-
-
-                                    </tr>
-                                    {% for c in comments reversed %}
-                                    {% if s.id == c.post_id %}
-                                    <tr>
-                                        <td>
-                                            <div class="by"><a href="/forum/user/{{c.comment_author.id}}"
-                                                    class="profile-link-comments">{{ c.comment_author.first_name }}</a>
-                                                |
-                                                <span class="dt">{{ c.created_at }}</span></div>
-                                            <div id="text">{{ c.comment }}
-                                            </div><br>
-
-                                            <div id="comment-control">{% if request.user.id == c.comment_author.id %}
-                                                <a href="/forum/delete_profile_comment/{{ c.id }}/{{ s.post_author.id }}"
-                                                    class="btn-1 s-delete">Delete</a>{% endif %}
-
-                                            </div>
-
-                                        </td>
-
-
-
-                                    </tr>
-
-
-                                    {% endif %}
-                                    {% endfor %}
-                                    <td>
-                                        <div id="comments">
-                                            <div class="comment-box">
-                                                <h3>Comment on {{ s.title }}:</h1>
-
-
-                                                    <form
-                                                        action="/forum/add_profile_comment/{{ s.id }}/{{ s.post_author.id }}"
-                                                        method="POST">
-                                                        {% csrf_token %}
-                                                        <textarea rows="4" cols="50" name="comment" required></textarea>
-                                                        <br>
-                                                        <input type="submit" value="Add Comment" class="btn-1 green">
-
-                                                    </form>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-
-
-                </td>
-            </tr>
-
+    <h1 class="profile-h1">{{ user.username }}
+        <div id="roles">
+            {% if user.groups.all %}
+            {% for group in user.groups.all %}
+            {% if group.name == 'Staff' %}
+            <span class="staff">{{ group }}</span>
+            {% elif group.name == 'Admin' %}
+            <span class="admin">{{ group }}</span>
+            {% elif group.name == 'Crook'  %}
+            <span class="user">{{ group }}</span>
+            {% endif %}
             {% endfor %}
-        </table>
+            {% else %}
+            <span class="scrub">Scrub</span>
+            {% endif %}
 
 
-    </div>
-    {% else %}
-    <div id="login-box">
-        <div id="login-inner">
-            <span class="please-login">
-                You need to be logged in to see this page.
-                <a href="/"><span class="btn-1">Login</span></a></span>
         </div>
+    </h1>
+    {% if request.user == user %}
+    <div id="gravatar-controls">
+        <a href="https://en.gravatar.com/" class="lower-links" target="blank">Change Gravatar</a>
     </div>
     {% endif %}
-    <script>
-        $(document).ready(function () {
-            $('#main').fadeIn('slow');
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            $('button.slideDown').click(function () {
-                if ($(this).siblings('.slideDownHidden').is(':hidden')) {
-                    $(this).siblings('.slideDownHidden').slideDown('fast');
-                } else {
-                    $(this).siblings('.slideDownHidden').slideUp('fast');
-                }
-            });
-            $('button.CslideDown').click(function () {
-                if ($(this).siblings('.CommentsSlideDownHidden').is(':hidden')) {
-                    $(this).siblings('.CommentsSlideDownHidden').fadeIn().slideDown("fast");
-                } else {
-                    $(this).siblings('.CommentsSlideDownHidden').slideUp('fast');
-                }
-            });
-            $(".menu").click(function () {
-                $(".box").animate({
-                    width: "toggle"
-                });
-            });
-            $('.menu').click(function () {
-                $('#menu-wrapper').fadeToggle('slow');
-            });
+    <br>
+    <div id="stats">
+        Level: {{ reputation }}
+    </div>
+    <table class="profile-table">
+        {% for s in posts reversed %}
+        <tr class="shadowed-tr">
+            <th colspan="5"></th>
 
-        });
-    </script>
-    <!-- <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>tinymce.init({ selector: 'textarea', menubar: 'false', plugins: 'quickbars', });</script> -->
-</body>
 
-</html>
+        </tr>
+        <tr class="shadowed-tr">
+            <td class="cc">
+                {% if request.user.id == s.post_author.id or request.user.is_staff %}
+                <div class="post_controls pc-2">
+                    <div id="slideToggle" class="main_divs">
+                        <button class="slideDown"></button>
+                        <div class="slideDownHidden">
+
+
+                            {% if request.user.id == s.post_author.id or request.user.is_staff %}<a
+                                href="/forum/edit/{{ s.id }}" class="btn-1">Edit</a>
+                            <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+
+                            {% if  request.user.is_staff %}
+                            {% if  request.user in s.stickied.all %}
+                            <a href="/forum/unstickied/{{ s.id }}" class="btn-1">Unsticky</a>
+                            {% else %}
+                            <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
+                            {% endif %}
+                            {% endif %}
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </td>
+            <td class="ellipsis titles-margin lt-bg"><span class="title-link"><a href="/forum/details/{{ s.id }}"
+                        class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
+                    {{ s.created_at }}</span>
+            </td>
+            <td class="center"><a href="/forum/user/{{s.post_author.id}}"
+                    class="home-link-authors">{{ s.post_author.username }}</a>
+                <span class="sub_title">Author</span>
+            <td class="center small"><span class="likes">{{ s.comments.count }}</span> <span
+                    class="sub_title">Comments</span> </td>
+            <td class="center small"><span class="likes">{{ s.liked_members.count }}</span> <span
+                    class="sub_title">Likes</span></td>
+
+        </tr>
+        <tr>
+            <td colspan="6" style="padding: 0; background: transparent;">
+                <div id="review-content" class="profile-post-txt">
+
+                    {{ s.body|safe }}
+                </div>
+                <div class="comment_controls">
+                    <div id="CommentsToggle" class="comment_divs">
+                        <button class="CslideDown">
+                            {% if s.comments.count > 0 %}
+                            View {{ s.comments.count }} Comments
+                            {% else %}
+                            Be the first to comment
+                            {% endif %}
+                        </button>
+                        <div class="CommentsSlideDownHidden">
+
+                            <table class="profile-comments-table">
+                                <tr>
+                                    <th> </th>
+                                </tr>
+                                {% for c in comments %}
+                                {% if s.id == c.post_id %}
+                                <tr>
+                                    <td>
+                                        <div class="by">
+                                            <a href="/forum/user/{{c.comment_author.id}}">
+                                                <div id="comments-avatar">{% avatar c.comment_author.username 26 %}
+                                                </div>
+                                            </a><a href="/forum/user/{{c.comment_author.id}}"
+                                                class="profile-link-comments">{{ c.comment_author.username }}</a>
+                                            |
+                                            <span class="dt">{{ c.created_at }}</span>
+                                        </div>
+                                        <div id="text">{{ c.comment| safe }}
+                                        </div><br>
+
+                                        <div id="comment-control">
+                                            {% if request.user.id == c.comment_author.id or request.user.is_staff %}
+                                            <a href="/forum/delete_profile_comment/{{ c.id }}/{{ s.id }}"
+                                                class="btn-1 s-delete">Delete</a>{% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                                <td>
+                                    {% if request.user.groups.all %}
+                                    <div id="comments">
+                                        <div class="comment-box">
+                                            <h3>Comment on {{ s.title }}:</h1>
+                                                <form
+                                                    action="/forum/add_profile_comment/{{ s.id }}/{{ s.post_author.id }}"
+                                                    method="POST">
+                                                    {% csrf_token %}
+                                                    <textarea name="comment"></textarea>
+
+                                                    <br>
+                                                    <input type="submit" value="Add Comment" class="btn-1 green">
+                                                </form>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    Only approved memebers can post comments.
+                                    {% endif %}
+                                </td>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<script src="{% static '/js/tinymce.js' %}"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea',
+        resize: 'both',
+        menubar: 'none',
+        statusbar: true,
+        plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste',
+            'emoticons',
+            'autoresize',
+            'autolink',
+            'autosave',
+            'media'
+        ],
+        default_link_target: '_blank',
+        autosave_ask_before_unload: false,
+        mobile: {
+            theme: 'silver'
+        },
+        toolbar: 'restoredraft | bold italic | link image | media | emoticons'
+        // toolbar: "restoredraft | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | media | emoticons"
+    });
+</script>
+{% endblock %}

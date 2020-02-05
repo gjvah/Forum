@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'videobg.html' %}
+{% load static %}
+{% load avatar_tags %}
+<link rel="stylesheet" href="{% static 'forum/css/slider.css' %}">
+
+<style>
+    .home {
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
+
+    .home:hover {
+        background: #8c1c1c !important;
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
+</style>
+
+<div id="main" class="main-css">
+    <div id="content-slider">
+        <div id="slider">
+            <div id="mask">
+                <ul>
+                    <li id="first" class="firstanimation">
+                        <a id="Games" onclick="openCity(event, 'games')" ();return false;">
+                            <img src='/static/forum/images/slideshow/0.jpg' alt="Game 1" /> </a>
+                        <div class="tooltip">
+                            <h1>Escape From Tarkov</h1>
+                        </div>
+                    </li>
+
+                    <li id="second" class="secondanimation">
+                        <a id="Games" onclick="openCity(event, 'games')" ();return false;">
+                            <img src='/static/forum/images/slideshow/1.jpg' alt="Game 2" /> </a>
+                        <div class="tooltip">
+                            <h1>Rainbow Six Siege</h1>
+                        </div>
+                    </li>
+
+                    <li id="third" class="thirdanimation">
+                        <a id="Games" onclick="openCity(event, 'games')" ();return false;">
+                            <img src='/static/forum/images/slideshow/2.jpg' alt="Game 3" /> </a>
+                        <div class="tooltip">
+                            <h1>Forza Horizon 3 / Grand Theft Auto V</h1>
+                        </div>
+                    </li>
+
+                    <li id="fourth" class="fourthanimation">
+                        <a id="Games" onclick="openCity(event, 'games')" ();return false;">
+                            <img src='/static/forum/images/slideshow/3.jpg' alt="Game 4" /> </a>
+                        <div class="tooltip">
+                            <h1>Battlefield 4 | Battlefield 1</h1>
+                        </div>
+                    </li>
+
+                    <li id="fifth" class="fifthanimation">
+                        <a id="Games" onclick="openCity(event, 'games')" ();return false;">
+                            <img src='/static/forum/images/slideshow/4.jpg' alt="Game 5" /> </a>
+                        <div class="tooltip">
+                            <h1>Elder Scrolls Online / Star Citizen</h1>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <div id="homepage-section-1">
+            <div id="stickied-posts-title" class="reqs-button3 accordion">RECENT STICKIED POSTS</div>
+            <div id="stickied-posts-homepage" class="panel3">
+                <table class="table stickied-home">
+                    {% for s in stickied reversed %}
+                    <tr
+                        class="{% if s.color == 'red' %}red-bg{% elif s.color == 'blue' %}blue-bg{% elif s.color == 'black' %}black-bg{% elif s.color == 'orange' %}orange-bg{% endif %} fadein-animation">
+                        <td class="ellipsis">
+                            <span class="title-link fadein-animation home-margin-title"><a
+                                    href="/forum/details/{{ s.id }}" class="title-link">{{ s.title }}</a></span><span
+                                class="created_at">Added on
+                                {{ s.created_at }}<a href="/forum/user/{{s.post_author.id}}">
+                                    by: {{s.post_author.username}}</a>
+                            </span>
+                            <div class="HomePostBodyButton"></div>
+                            <div class="HomePostBodyText">
+                                <div id="home-gravatar-image">
+                                    {% avatar s.post_author.username %}
+                                    <h1 class="home-user-h1">{{ s.post_author.username }}
+                                        <div id="roles" style="position: relative;" class="homepage-roles-bg">
+                                            {% if s.post_author.groups.all %}
+                                            {% for group in s.post_author.groups.all %}
+                                            {% if group.name == 'Staff' %}
+                                            <span class="staff roles-all">{{ group }}</span>
+                                            {% elif group.name == 'Admin' %}
+                                            <span class="admin roles-all">{{ group }}</span>
+                                            {% elif group.name == 'Crook'  %}
+                                            <span class="user roles-all">{{ group }}</span>
+                                            {% endif %}
+                                            {% endfor %}
+                                            {% else %}
+                                            <span class="scrub roles-all">Scrub</span>
+                                            {% endif %}
+
+
+                                        </div>
+                                    </h1>
+                                </div>
+                                {{ s.body|safe }}
+                                <div class="linktopost">
+                                    <a href="/forum/details/{{ s.id }}">Got to Post</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div id="legacy">
+        <div class="reqs-button">
+            <div class="accordion">REQUIREMENTS</div>
+        </div>
+        <div class="panel">
+            <div class="main-text2">
+                <table class="hptb" cellspacing="8">
+                    <tr>
+                        <td width="39" align="left" valign="middle"><img src='/static/forum/images/homeicons/1.png'
+                                width="35" height="35" /></td>
+                        <td valign="middle">You must be over 18 at the very least. We’re all pretty old school,
+                            and some of our members qualify for carbon dating.</td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/2.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">No snowflakes. You need to be able to take a joke. If you’re easily
+                            offended
+                            by
+                            words, you should definitely look elsewhere.</td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/3.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">No cheaters & script kiddies. We play for fun. We do get competitive,
+                            but
+                            never
+                            to the point where cheating is an option. You need to have a valid Steam account.</td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/4.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">Have a working mic. We use Discord as our primary means of communication
+                            in-game. If you want to play in group, you need to be in the appropriate voice channel.
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <div class="reqs-button2">
+            <div class="accordion">RULES</div>
+        </div>
+        <div class="panel2">
+            <div class="main-text2">
+                <table class="hptb" cellspacing="8">
+                    <tr>
+                        <td width="39" align="left" valign="middle"><img src='/static/forum/images/homeicons/3.png'
+                                width="35" height="35" /></td>
+                        <td valign="middle">First and foremost: no cheating. If you get caught cheating in any
+                            multiplayer game, you will get booted from the clan.</td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/5.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">Treat others the way you want to be treated, especially the opposition.
+                            Shit
+                            talking is fine, and so is having a bit of a laugh, but don’t be a dick. Sportsmanship
+                            is
+                            key,
+                            even when messing about.</td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/6.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">No drama. No begging. No whining.</td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/7.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">English. This is an English speaking clan.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/8.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">No harassment towards members and non-members. If you’re not sure what
+                            qualifies
+                            as harassment, talk to one of the mods.</td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/9.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">You have to wear the clan tags [CRKS] when playing multiplayer games.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/10.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">There is no strict hierarchy or a complicated chain of command. If you have
+                            questions use discord or the community forums.</td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="middle"><img src='/static/forum/images/homeicons/11.png' width="35"
+                                height="35" />
+                        </td>
+                        <td valign="middle">Have fun. This is the most important rule. We are gamers. We play games
+                            to
+                            have
+                            fun and get away from the stress of our jobs and daily lives. Take it easy, enjoy
+                            yourself,
+                            make
+                            friends and dominate the server in the process.</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div id="eft">
+        <table class="hptb highlight eft-t">
+            <tr>
+                <td align="center" valign="middle"><span class="style5">Escape From
+                        Tarkov</span> </td>
+            </tr>
+            <tr>
+                <td align="center" valign="middle" class="style6">Cheeki Breeki</td>
+            </tr>
+            <tr>
+                <td align="center" valign="top" class="subpagetext">
+                    <table>
+
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Professional bullet
+                                    wasting</span></td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Irrelevant chatter</span></td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Panic team kills</span></td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Piss-poor planning</span></td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Confusing call-outs</span></td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">We used to have an M4</span></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td align="center" valign="middle" class="subpagetext"><a href="https://www.escapefromtarkov.com"
+                        target="_blank"
+                        onmouseover="MM_swapImage('Image1','','/static/forum/images/homeicons/eft2.png',0)"
+                        onmouseout="MM_swapImgRestore()"><img src='/static/forum/images/homeicons/eft1.png'
+                            name="Image1" width="266" height="55" border="0" id="Image1" /></a></td>
+            </tr>
+        </table>
+    </div>
+    <div id="siege">
+        <table class="hptb highlight siege-t">
+            <tr>
+                <td align="center" valign="middle"><span class="style5">Rainbow Six |
+                        Siege</span> </td>
+            </tr>
+            <tr>
+                <td align="center" valign="middle" class="style6">Best Copper IV Clan in the world. </td>
+            </tr>
+            <tr>
+                <td align="center" valign="top" class="subpagetext">
+                    <table>
+
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Absolutely no map
+                                    knowledge</span></td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Zero situational awareness</span></td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Tactical suicidal tendencies</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Horrible accuracy</span></td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Irrelevant communication</span></td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle"><span class="style7">•</span></td>
+                            <td align="left" valign="middle"><span class="style7">Zero fu©ks given </span></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td align="center" valign="middle" class="subpagetext"><a
+                        href="https://game-rainbow6.ubi.com/en-us/home" target="_blank"
+                        onmouseover="MM_swapImage('Image1','','/static/forum/images/homeicons/stats2.png',0)"
+                        onmouseout="MM_swapImgRestore()"><img src='/static/forum/images/homeicons/stats1.png'
+                            name="Image1" width="266" height="55" border="0" id="Image1" /></a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

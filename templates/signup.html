@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Sign Up{% endblock %}
+
 
 {% block content %}
+{% include 'videobg.html' %}
+<div id="main" class="main-css signup-css">
   <h2>Sign up</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Sign up</button>
   </form>
+</div>
 {% endblock %}

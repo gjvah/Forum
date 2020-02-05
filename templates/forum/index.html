@@ -1,262 +1,469 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>forum</title>
-    {% load static %}
-    <script src="{% static 'forum/js/script.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-</head>
-
-<body>{% if user.is_authenticated %}
-    <div id="menu-wrapper"></div>
-    <div id="menu-container">
-        <button type="button" class="menu"></button>
-        <div class="box">
-            <div class="box-inner">
-                <ul style="list-style-type:none">
-                    <li><a href="/forum" method="POST" class="menu-btn">Home</a></li>
-                    <li><a href="/forum/user/{{request.user.id}}" class="menu-btn">Profile</a></li>
-                </ul>
+{% extends 'forum-base.html' %}
 
 
+{% block content %}
+{% include 'videobg.html' %}
+<style>
+    .forum {
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
+
+    .forum:hover {
+        background: #8c1c1c !important;
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
+</style>
+
+
+
+<div id="main">
+    {% if user.groups.all %}
+    <table class="table main-table-forum">
+        <tr class="first-head">
+            <th colspan="4">My Posts</th>
+        </tr>
+        {% for s in Model_one %}
+
+
+        <tr
+            class="{% if s.color == 'red' %}red-bg{% elif s.color == 'blue' %}blue-bg{% elif s.color == 'black' %}black-bg{% elif s.color == 'orange' %}orange-bg{% endif %}">
+
+            <td class="ellipsis titles-margin">
+                <div class="post_controls">
+                    <div id="slideToggle" class="main_divs">
+                        <button class="slideDown"></button>
+                        <div class="slideDownHidden">
+
+
+                            {% if request.user.id == s.post_author.id %}<a href="/forum/edit/{{ s.id }}"
+                                class="btn-1 slide-menu-btn">Edit</a>
+                            <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+
+                            {% if  request.user.is_staff %}
+                            {% if  s in stickied.all %}
+                            <a href="/forum/unstickied/{{ s.id }}" class="btn-1 slide-menu-btn">Unsticky</a>
+                            {% else %}
+                            <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
+                            {% endif %}
+                            {% endif %}
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="title-link"><a href="/forum/details/{{ s.id }}"
+                        class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
+                    {{ s.created_at }}<a href="/forum/user/{{s.post_author.id}}">
+                        by: {{s.post_author.username}}</a>
+                </span>
+            </td>
+
+            </td>
+
+            <td class="center small"><span
+                    class="likes fadein-animation">{{ s.liked_members.count|add:s.comments.count }}</span>
+                <span class="sub_title">Points</span></td>
+
+
+
+        </tr>
+
+        {% endfor %}
+    </table>
+    <div class="pagination">
+        <span class="step-links">
+            <span class="current">
+                Page {{ Model_one.number }} of {{ Model_one.paginator.num_pages }}
+            </span>
+            {% if Model_one.has_previous %}
+            <a href="?page1=1" class="pagination-button next">&laquo; first</a>
+            <a href="?page1={{ Model_one.previous_page_number }}" class="pagination-button previous">previous</a>
+            {% endif %}
+
+
+
+            {% if Model_one.has_next %}
+            <a href="?page1={{ Model_one.next_page_number }}" class="pagination-button next">next</a>
+            <a href="?page1={{ Model_one.paginator.num_pages }}" class="pagination-button last">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    <a href="/forum/new" class="btn-1 crks-red main-b">Add New Post</a>
+    {% else %}
+    <div id="sorry">
+        Read Only Mode | Only Approved Members can post.
+    </div>
+    {% endif %}
+    <div class="reload3">
+        <table class="table stickied">
+            <tr class="first-head">
+                <th colspan="4">Stickied Posts</th>
+
+            <tr>
+
+                {% for s in stickied reversed %}
+
+            <tr
+                class="{% if s.color == 'red' %}red-bg{% elif s.color == 'blue' %}blue-bg{% elif s.color == 'black' %}black-bg{% elif s.color == 'orange' %}orange-bg{% endif %} fadein-animation">
+                <td class="ellipsis titles-margin">
+                    {% if request.user == s.post_author or request.user.is_staff %}
+                    <div class="post_controls fadein-animation">
+                        <div id="slideToggle" class="main_divs">
+                            <button class="slideDown"></button>
+                            <div class="slideDownHidden">
+
+                                {% if request.user.id == s.post_author.id or request.user.is_staff %}<a
+                                    href="/forum/edit/{{ s.id }}" class="btn-1 slide-menu-btn">Edit</a>
+                                <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+
+                                {% if  request.user.is_staff  %}
+
+                                <a href="/forum/unstickied/{{ s.id }}" class="btn-1 slide-menu-btn">Unsticky</a>
+
+                                {% endif %}
+
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+
+                    <span class="title-link fadein-animation"><a href="/forum/details/{{ s.id }}"
+                            class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
+                        {{ s.created_at }}<a href="/forum/user/{{s.post_author.id}}">
+                            by: {{s.post_author.username}}</a>
+                    </span>
+                </td>
+
+
+
+                <td class="center small"><span
+                        class="likes fadein-animation">{{ s.liked_members.count|add:s.comments.count }}</span>
+                    <span class="sub_title">Points</span></td>
+                <td class="right">
+
+
+
+
+                    {% if  request.user != s.post_author %}
+                    {% if  request.user in s.liked_members.all %}
+                    <a data-likes='{{ s.id}}' class="unlike-btn fadein-animation">Unlike</a>
+                    {% else %}
+                    <a data-dislikes='{{ s.id}}' class="like-btn fadein-animation">Like</a>
+                    {% endif %}
+                    {% endif %}
+
+
+
+                </td>
+
+
+            </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+    <div id="all-posts-title">All Posts</div>
+    <ul class="tab">
+        <li class="current-tab tablinks" data-tab="tab1">Hot</li>
+        <li data-tab="tab2" class="tablinks">New</li>
+    </ul>
+
+    <div class="tab-content current-tab" id="tab1">
+        <div class="reload">
+            <table class="table unstickied-bottom">
+
+                {% for s in Model_two %}
+
+                <tr
+                    class="{% if s.color == 'red' %}red-bg{% elif s.color == 'blue' %}blue-bg{% elif s.color == 'black' %}black-bg{% elif s.color == 'orange' %}orange-bg{% endif %} fadein-animation">
+                    <td class="ellipsis titles-margin">
+
+                        {% if request.user == s.post_author or request.user.is_staff %}
+                        <div class="post_controls fadein-animation">
+                            <div id="slideToggle" class="main_divs">
+                                <button class="slideDown"></button>
+                                <div class="slideDownHidden">
+
+                                    {% if request.user.id == s.post_author.id or request.user.is_staff %}<a
+                                        href="/forum/edit/{{ s.id }}" class="btn-1 slide-menu-btn">Edit</a>
+                                    <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+
+                                    {% if  request.user.is_staff  %}
+
+                                    <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
+
+                                    {% endif %}
+
+
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+
+                        <span class="title-link fadein-animation"><a href="/forum/details/{{ s.id }}"
+                                class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
+                            {{ s.created_at }}<a href="/forum/user/{{s.post_author.id}}">
+                                by: {{s.post_author.username}}</a>
+                        </span></td>
+
+
+                    <td class="center small"><span
+                            class="likes fadein-animation">{{ s.liked_members.count|add:s.comments.count }}</span>
+                        <span class="sub_title">Points</span></td>
+                    <td class="right">
+
+
+                        {% if  request.user != s.post_author %}
+                        {% if  request.user in s.liked_members.all %}
+                        <a data-likes='{{ s.id}}' class="unlike-btn fadein-animation">Unlike</a>
+                        {% else %}
+                        <a data-dislikes='{{ s.id}}' class="like-btn fadein-animation">Like</a>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+            <div class="pagination">
+                <span class="step-links">
+                    <span class="current">
+                        Page {{ Model_two.number }} of {{ Model_two.paginator.num_pages }}
+                    </span>
+                    {% if Model_two.has_previous %}
+                    <a href="?page2=1" class="pagination-button next">&laquo; first</a>
+                    <a href="?page2={{ Model_two.previous_page_number }}"
+                        class="pagination-button previous">previous</a>
+                    {% endif %}
+
+
+
+                    {% if Model_two.has_next %}
+                    <a href="?page2={{ Model_two.next_page_number }}" class="pagination-button next">next</a>
+                    <a href="?page2={{ Model_two.paginator.num_pages }}" class="pagination-button last">last &raquo;</a>
+                    {% endif %}
+                </span>
             </div>
         </div>
     </div>
-    <h2>Hello, {{ request.user }}</h2>
-    <a href="/forum" method="POST" class="btn-1">Home</a>
-    <a href="/forum/user/{{request.user.id}}" class="btn-1">Profile</a>
-    <a href="{% url 'logout' %}" class="btn-1">Logout</a>
-    <br><br>
-    <div id="main">
-        <table class="table">
-            <tr>
-                <th colspan="5">My Posts</th>
-            </tr>
-            {% for s in combined_posts reversed %}
-            <tr>
 
-                <td>
-                    <div class="post_controls">
-                        <div id="slideToggle" class="main_divs">
-                            <button class="slideDown"></button>
-                            <div class="slideDownHidden">
+    <div class="tab-content" id="tab2">
+        <div class="reload2">
+            <table class="table unstickied-bottom">
 
+                {% for s in Model_three %}
 
-                                {% if request.user.id == s.post_author.id %}<a href="/forum/edit/{{ s.id }}"
-                                    class="btn-1">Edit</a>
-                                <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+                <tr
+                    class="{% if s.color == 'red' %}red-bg{% elif s.color == 'blue' %}blue-bg{% elif s.color == 'black' %}black-bg{% elif s.color == 'orange' %}orange-bg{% endif %} fadein-animation">
+                    <td class="ellipsis titles-margin">
 
-                                {% if  request.user == s.post_author %}
-                                {% if  request.user in s.stickied.all %}
-                                <a href="/forum/unstickied/{{ s.id }}" class="btn-1">Unsticky</a>
-                                {% else %}
-                                <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
-                                {% endif %}
-                                {% endif %}
+                        {% if request.user == s.post_author or request.user.is_staff %}
+                        <div class="post_controls fadein-animation">
+                            <div id="slideToggle" class="main_divs">
+                                <button class="slideDown"></button>
+                                <div class="slideDownHidden">
+
+                                    {% if request.user.id == s.post_author.id or request.user.is_staff %}<a
+                                        href="/forum/edit/{{ s.id }}" class="btn-1 slide-menu-btn">Edit</a>
+                                    <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+
+                                    {% if  request.user.is_staff  %}
+
+                                    <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
+
+                                    {% endif %}
 
 
-
-
-
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        {% endif %}
 
 
-                    <span class="title-link"><a href="/forum/details/{{ s.id }}"
-                            class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
-                        {{ s.created_at }}</span>
-                </td>
-                <td class="center">Something</td>
-
-                <td class="center"><a href="/forum/user/{{s.post_author.id}}"
-                        class="home-link-authors">{{ s.post_author.first_name }}</a><span
-                        class="sub_title">Author</span> </td>
-                </td>
-                <td class="center">{{ s.comments.count }} <span class="sub_title">Comments</span> </td>
-                <td class="center"><span class="likes">{{ s.liked_members.count }}</span> <span
-                        class="sub_title">Likes</span></td>
+                        <span class="title-link fadein-animation"><a href="/forum/details/{{ s.id }}"
+                                class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
+                            {{ s.created_at }}<a href="/forum/user/{{s.post_author.id}}">
+                                by: {{s.post_author.username}}</a>
+                        </span></td>
 
 
-
-            </tr>
-
-            {% endfor %}
-        </table>
-        <a href="/forum/new" class="btn-1 green main-b">Add New Post</a>
-
-        <table class="table stickied">
-            <tr>
-                <th colspan="6">All Posts</th>
-
-            </tr>
-            {% for s in stickied reversed %}
-            <tr>
-                <td> {% if request.user.id == s.post_author.id %}
-                    <div class="post_controls">
-                        <div id="slideToggle" class="main_divs">
-                            <button class="slideDown"></button>
-                            <div class="slideDownHidden">
+                    <td class="center small"><span
+                            class="likes fadein-animation">{{ s.liked_members.count|add:s.comments.count }}</span>
+                        <span class="sub_title">Points</span></td>
+                    <td class="right">
 
 
-                                <a href="/forum/edit/{{ s.id }}" class="btn-1">Edit</a>
-                                <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
+                        {% if  request.user != s.post_author %}
+                        {% if  request.user in s.liked_members.all %}
+                        <a data-likes='{{ s.id}}' class="unlike-btn fadein-animation">Unlike</a>
+                        {% else %}
+                        <a data-dislikes='{{ s.id}}' class="like-btn fadein-animation">Like</a>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
 
-                                {% if  request.user == s.post_author %}
-                                {% if  request.user in s.stickied.all %}
-                                <a href="/forum/unstickied/{{ s.id }}" class="btn-1">Unsticky</a>
-                                {% else %}
-                                <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
-                                {% endif %}
+                {% endfor %}
 
-
-
-
-
-
-                            </div>
-                        </div>
-                    </div>
+            </table>
+            <div class="pagination">
+                <span class="step-links">
+                    <span class="current">
+                        Page {{ Model_three.number }} of {{ Model_three.paginator.num_pages }}
+                    </span>
+                    {% if Model_three.has_previous %}
+                    <a href="?page3=1" class="pagination-button next">&laquo; first</a>
+                    <a href="?page3={{ Model_three.previous_page_number }}"
+                        class="pagination-button previous">previous</a>
                     {% endif %}
 
 
-                    <span class="title-link"><a href="/forum/details/{{ s.id }}"
-                            class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
-                        {{ s.created_at }}</span>
-                </td>
-                <td class="center">Something</td>
-                <td class="center"><a href="/forum/user/{{s.post_author.id}}"
-                        class="home-link-authors">{{ s.post_author.first_name }}</a></td>
-                <td class="center">{{ s.comments.count }} <span class="sub_title">Comments</span> </td>
-                <td class="center"><span class="likes">{{ s.liked_members.count }}</span> <span
-                        class="sub_title">Likes</span></td>
-                <td class="right">
 
-
-
-
-                    {% if  request.user != s.post_author %}
-                    {% if  request.user in s.liked_members.all %}
-                    <a href="/forum/unlike/{{ s.id }}" class="btn-1">Unlike</a>
-                    {% else %}
-                    <a href="/forum/like/{{ s.id }}" class="btn-1 green">Like</a>
+                    {% if Model_three.has_next %}
+                    <a href="?page3={{ Model_three.next_page_number }}" class="pagination-button next">next</a>
+                    <a href="?page3={{ Model_three.paginator.num_pages }}" class="pagination-button last">last
+                        &raquo;</a>
                     {% endif %}
-                    {% endif %}
-
-
-                    {% if request.user == s.post_author.id %}<a href="/forum/edit/{{ s.id }}" class="btn-1">Edit</a> <a
-                        href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
-                </td>
-
-
-            </tr>
-
-            {% endfor %}
-        </table>
-        <table class="table">
-
-            {% for s in unstickied reversed %}
-
-            <tr>
-                <td>
-
-                    {% if request.user == s.post_author %}
-                    <div class="post_controls">
-                        <div id="slideToggle" class="main_divs">
-                            <button class="slideDown"></button>
-                            <div class="slideDownHidden">
-
-                                {% if request.user.id == s.post_author.id %}<a href="/forum/edit/{{ s.id }}"
-                                    class="btn-1">Edit</a>
-                                <a href="/forum/delete/{{ s.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
-
-                                {% if  request.user == s.post_author %}
-                                {% if  request.user in s.stickied.all %}
-                                <a href="/forum/unstickied/{{ s.id }}" class="btn-1">Unsticky</a>
-                                {% else %}
-                                <a href="/forum/stickied/{{ s.id }}" class="btn-1 green">Sticky</a>
-                                {% endif %}
-                                {% endif %}
-
-
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-
-                    <span class="title-link"><a href="/forum/details/{{ s.id }}"
-                            class="title-link">{{ s.title }}</a></span><span class="created_at">Added on
-                        {{ s.created_at }}</span></td>
-                <td class="center">Something</td>
-
-                <td class="center"><a href="/forum/user/{{s.post_author.id}}"
-                        class="home-link-authors">{{ s.post_author.first_name }}</a></td>
-                <td class="center">{{ s.comments.count }} <span class="sub_title">Comments</span> </td>
-                <td class="center"><span class="likes">{{ s.liked_members.count }}</span> <span
-                        class="sub_title">Likes</span></td>
-                <td class="right">
-
-
-                    {% if  request.user != s.post_author %}
-                    {% if  request.user in s.liked_members.all %}
-                    <a href="/forum/unlike/{{ s.id }}" class="btn-1">Unlike</a>
-                    {% else %}
-                    <a href="/forum/like/{{ s.id }}" class="btn-1 green">Like</a>
-                    {% endif %}
-                    {% endif %}
-                </td>
-            </tr>
-
-            {% endfor %}
-        </table>
-    </div>
-    {% else %}
-    <div id="login-box">
-        <div id="login-inner">
-            <span class="please-login">
-                You need to be logged in to see this page.
-                <a href="/"><span class="btn-1">Login</span></a></span>
+                </span>
+            </div>
         </div>
     </div>
-    {% endif %}
-    <script>
-        $(document).ready(function () {
-            $('#main').fadeIn('slow');
+</div>
+<script>
+    $(document).ready(function () {
+        var last_id = localStorage.getItem('tab_id');
+        if (last_id) {
+            $('ul.tab li').removeClass('current-tab');
+            $('.tab-content').removeClass('current-tab');
+            $(".tab li").eq(Number(last_id.match(/\d+/)[0]) - 1).addClass('current-tab');
+            $("#" + last_id).addClass('current-tab');
+        }
+        $('ul.tab li').click(function () {
+            var tab_id = $(this).attr('data-tab');
+            $('ul.tab li').removeClass('current-tab');
+            $('.tab-content').removeClass('current-tab');
+
+            $(this).addClass('current-tab');
+            $("#" + tab_id).addClass('current-tab');
+            localStorage.setItem('tab_id', tab_id);
         });
-    </script>
-    <script>
-        $(document).ready(function () {
+    });
+    document.addEventListener('animationstart', function (e) {
+        if (e.animationName === 'fade-in') {
+            e.target.classList.add('did-fade-in');
+        }
+    });
 
-            $('button.slideDown').click(function () {
-                if ($(this).siblings('.slideDownHidden').is(':hidden')) {
-                    $(this).siblings('.slideDownHidden').fadeIn().slideDown("fast");
-                } else {
-                    $(this).siblings('.slideDownHidden').fadeOut().slideUp('fast');
-                }
-            });
-            $(".menu").click(function () {
-                $(".box").animate({
-                    width: "toggle"
-                });
-            });
-            $('.menu').click(function () {
-                $('#menu-wrapper').fadeToggle('slow');
-            });
+    document.addEventListener('animationend', function (e) {
+        if (e.animationName === 'fade-out') {
+            e.target.classList.remove('did-fade-in');
+        }
+    });
 
+
+
+    $('.reload').on("click", ".unlike-btn", function (e) {
+        e.preventDefault(); // cancel click
+        var $this = $(this);
+        var number = $this.attr('data-likes');
+        var page = $(this).attr('href');
+        $('.reload').load(page);
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: "/forum/unlike/" + number,
         });
-    </script>
+        $(".reload").load("/forum .reload");
+
+    });
+    $('.reload').on("click", ".like-btn", function (e) {
+        e.preventDefault(); // cancel click
+        var $this = $(this);
+        var number = $this.attr('data-dislikes');
+        var page = $(this).attr('href');
+        $('.reload').load(page);
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: "/forum/like/" + number,
+        });
+        $(".reload").load("/forum .reload");
+
+    });
+
+    $('.reload2').on("click", ".unlike-btn", function (e) {
+        e.preventDefault(); // cancel click
+        var $this = $(this);
+        var number = $this.attr('data-likes');
+        var page = $(this).attr('href');
+        $('.reload2').load(page);
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: "/forum/unlike/" + number,
+        });
+        $(".reload2").load("/forum .reload2");
+
+    });
+    $('.reload2').on("click", ".like-btn", function (e) {
+        e.preventDefault(); // cancel click
+        var $this = $(this);
+        var number = $this.attr('data-dislikes');
+        var page = $(this).attr('href');
+        $('.reload2').load(page);
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: "/forum/like/" + number,
+        });
+        $(".reload2").load("/forum .reload2");
+
+    });
+    $('.reload3').on("click", ".unlike-btn", function (e) {
+        e.preventDefault(); // cancel click
+        var $this = $(this);
+        var number = $this.attr('data-likes');
+        var page = $(this).attr('href');
+        $('.reload3').load(page);
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: "/forum/unlike/" + number,
+        });
+        $(".reload3").load("/forum .reload3");
+
+
+    });
+    $('.reload3').on("click", ".like-btn", function (e) {
+        e.preventDefault(); // cancel click
+        var $this = $(this);
+        var number = $this.attr('data-dislikes');
+        var page = $(this).attr('href');
+        $('.reload3').load(page);
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: "/forum/like/" + number,
+        });
+        $(".reload3").load("/forum .reload3");
+
+    });
 
 
 
-</body>
+
+</script>
 
 
-</html>
+{% endblock %}

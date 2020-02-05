@@ -1,11 +1,14 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from . import views
 from django.urls import re_path
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
 
     url(r'^$', views.index),
     url(r'^new$', views.new),
+    url(r'^static/', views.pwa),
     url(r'^new_post$', views.new_post),
     url(r'^edit$', views.edit),
     url(r'^details$', views.details),
@@ -24,4 +27,5 @@ urlpatterns = [
     url(r'^stickied/(?P<id>\d+)$', views.stickied),
     url(r'^unstickied/(?P<id>\d+)$', views.unstickied),
     url(r'^user/(?P<id>\d+)$', views.profile),
-]
+    url('avatar/', include('avatar.urls')),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

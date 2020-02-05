@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta name="CROOKS CLAN" content="Short name">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+    <title>CROOKS CLAN</title>
+    {% load avatar_tags %}
+    {% load static %}
+    <meta name="apple-mobile-web-app-status-bar" content="#d01414">
+    <meta name="theme-color" content="#d01414">
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/forum/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/forum/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/forum/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/forum/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/forum/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/forum/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/forum/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/forum/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/forum/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/forum/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/forum/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/forum/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/forum/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#d01414">
+    <meta name="msapplication-TileImage" content="/static/ms-icon-144x144.png">
+    <meta name="theme-color" content="#d01414">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'forum/css/responsive.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <h1 id="top"></h1>
+    <div id="user-menu" class="usermenu">
+        <div id="main-logo">
+            <a href="/forum"><img src="/static/forum/images/main-logo.png"></a>
+        </div>
+        {% if user.is_authenticated %}
+        {% include 'main-menu.html' %}
+    </div>
+    <div id="wrapper">
+
+        {% block content %}
+        {% endblock %}
+
+        <table class="structural">
+            <tr>
+                <td>
+                    <div id="discord-banner">
+                        <img src="/static/images/discord-banner.png" style="max-width: 300px;">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="crks-discord-widget" class="discord-widget"></div>
+                    <div id="link-to-top"><a href="#top"><img src="/static/forum/images/totop.png" alt="ToTop"
+                                onmouseover="this.src='/static/forum/images/totophover.png';"
+                                onmouseout="this.src='/static/forum/images/totop.png';"></a>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    {% else %}
+    <div id="login-box">
+        {% include 'videobg.html' %}
+        {% include 'main-menu.html' %}
+        <div id="login-inner">
+            <span class="please-login">
+                You need to be logged in to see this page.
+                <a href="{% url 'login' %}"><span class="btn-1">Login</span></a></span>
+        </div>
+    </div>
+    {% endif %}
+    </div>
+    <div id="loading"></div>
+
+
+
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/discord.css' %}">
+    {% include 'discord-widget.html' %}
+    <script src="{% static 'forum/js/script.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+{% load static %}
+
+
+
+<script type="text/javascript" src="{% static 'js/discord-widget.min.js' %}"></script>
+<script type=" text/javascript">  </script>
+
+
+<script type="text/javascript">
+    discordWidget.init({
+        serverId: '256993988798578688',
+        join: true,
+        joinText: 'Join Server',
+        alphabetical: false,
+        theme: 'dark',
+        hideChannels: ['Channel Name 1', 'Channel Name 2'],
+        showAllUsers: true,
+        allUsersDefaultState: true,
+        showNick: false,
+        userName: '',
+        useCDN: true
+    });
+    discordWidget.render();
+</script>

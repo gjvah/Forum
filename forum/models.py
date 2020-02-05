@@ -3,6 +3,20 @@ from django.contrib.auth.models import User
 from datetime import date, datetime
 from dateutil.parser import parse as parse_date
 
+
+COLOR_CHOICES = (
+    ('green','General Discussion'),
+    ('blue', 'GTA V'),
+    ('red','Rainbow Six Siege'),
+    ('orange','Off Topic'),
+    ('black','Escape From Tarkov'),
+)
+
+# class MyModel(models.Model):
+#     color = models.CharField(max_length=6, choices=COLOR_CHOICES, default='green')
+
+
+
 # Create your models here.
 ########### Main Content ###########
 class Post_Manager(models.Manager):
@@ -41,6 +55,7 @@ class Post(models.Model):
 
     title = models.CharField(max_length=45)
     body = models.TextField()
+    color = models.CharField(max_length=45, default='green')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     post_author = models.ForeignKey(User, on_delete=models.CASCADE)

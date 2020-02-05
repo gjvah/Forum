@@ -1,105 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'forum-base.html' %}
+{% block content %}
+{% include 'videobg.html' %}
+<style>
+    .forum {
+        background-color: #ad1212 !important;
+        color: white !important;
+        border: 1px solid #ad1212 !important;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>My Shows</title>
-    {% load static %}
-    <script src="{% static 'forum/js/script.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-</head>
+    .forum:hover {
+        background-color: #8c1c1c !important;
 
-<body>{% if user.is_authenticated %}
-    <div id="menu-wrapper"></div>
-    <div id="menu-container">
-        <button type="button" class="menu"></button>
-        <div class="box">
-            <div class="box-inner">
-                <ul style="list-style-type:none">
-                    <li><a href="/forum" method="POST" class="menu-btn">Home</a></li>
-                    <li><a href="/forum/user/{{request.user.id}}" class="menu-btn">Profile</a></li>
-                </ul>
+    }
+</style>
+
+<div id="main" class="l-box">
+    <h1 style="text-align: center;" class="new-edit-h1">New Post</h1>
 
 
-            </div>
-        </div>
-    </div>
-    <h2>Hello, {{ request.user }}</h2>
-    <a href="/forum" method="POST" class="btn-1">Home</a>
-    <a href="/forum/user/{{request.user.id}}" class="btn-1">Profile</a>
-    <a href="{% url 'logout' %}" class="btn-1">Logout</a>
-    <br><br>
-
-    <h1 style="text-align: center;">New Item</h1>
-    <div id="main" class="l-box">
-
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-
-        <form action="/forum/new_post" method="POST">
-            {% csrf_token %}
-            <label>Item Name</label>
-            <br>
-            <input type="text" name="title">
-            <br>
-            <label>Decription</label>
-            <br>
-            <textarea rows="20" cols="132" name="body"></textarea>
-            <br>
-            <input type="submit" value="Add" class="btn-1 green"></input><a href="/forum" method="POST"
-                class="btn-1">Cancel</a>
-
-        </form>
-
-    </div>
-    {% else %}
-    <div id="login-box">
-        <div id="login-inner">
-            <span class="please-login">
-                You need to be logged in to see this page.
-                <a href="/"><span class="btn-1">Login</span></a></span>
-        </div>
-    </div>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
     {% endif %}
-    <script>
-        $(document).ready(function () {
-            $('#main').fadeIn('slow');
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
 
-            $('button.slideDown').click(function () {
-                if ($(this).siblings('.slideDownHidden').is(':hidden')) {
-                    $(this).siblings('.slideDownHidden').fadeIn().slideDown("fast");
-                } else {
-                    $(this).siblings('.slideDownHidden').fadeOut().slideUp('fast');
-                }
-            });
-            $(".menu").click(function () {
-                $(".box").animate({
-                    width: "toggle"
-                });
-            });
-            $('.menu').click(function () {
-                $('#menu-wrapper').fadeToggle('slow');
-            });
+    <form action="/forum/new_post" method="POST">
+        {% csrf_token %}
+        <label>Title</label>
+        <br>
+        <input type="text" name="title">
+        <br>
+        <label>Category</label>
+        <br>
+        <select name="color" id="color">
+            <option value="green">General Discussion</option>
+            <option value="blue">GTA V</option>
+            <option value="red">Rainbow Six Siege</option>
+            <option value="orange">Off Topic</option>
+            <option value="black">Escape From Tarkov</option>
+        </select>
+        <label>Post</label>
+        <br>
+        <textarea name="body"></textarea>
+        <br>
+        <input type="submit" value="Add" class="btn-1 forum"></input><a href="/forum" method="POST"
+            class="btn-1">Cancel</a>
 
-        });
-    </script>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>tinymce.init({ selector: 'textarea', menubar: 'none', plugins: 'quickbars', });</script>
+    </form>
 
-</body>
 
-</html>
+</div>
+
+{% endblock %}

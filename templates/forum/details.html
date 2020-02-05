@@ -1,181 +1,262 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'forum-base.html' %}
+{% block content %}
+{% if post_detail.color == 'green' %}
+{% include 'videobg.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Details</title>
-    {% load static %}
-    <script src="{% static 'forum/js/script.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-</head>
+{% load avatar_tags %}
+{% endif %}
+<style>
+    .forum {
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
 
-<body>{% if user.is_authenticated %}
-    <div id="menu-wrapper"></div>
-    <div id="menu-container">
-        <button type="button" class="menu"></button>
-        <div class="box">
-            <div class="box-inner">
-                <ul style="list-style-type:none">
-                    <li><a href="/forum" method="POST" class="menu-btn">Home</a></li>
-                    <li><a href="/forum/user/{{request.user.id}}" class="menu-btn">Profile</a></li>
-                </ul>
+    .forum:hover {
+        background: #8c1c1c !important;
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
+</style>
 
-
-            </div>
-        </div>
-    </div>
-    <h2>Hello, {{ request.user }}</h2>
-    <a href="/forum" method="POST" class="btn-1">Home</a>
-    <a href="/forum/user/{{request.user.id}}" class="btn-1">Profile</a>
-    <a href="{% url 'logout' %}" class="btn-1">Logout</a>
-    <br><br>
-    <div id="main">
-
-
-        <h1>{{ post_detail.title }}</h1>
-
-        <table class="table">
-            <tr>
-                <th>Item Name</th>
-
-
-                <th>Added By</th>
-                <th>Likes</th>
-                <th>Added On</th>
-                <th>{% if request.user == post_detail.post_author %}<a href="/forum/edit/{{ post_detail.id }}"
-                        class="btn-1">Edit</a> <a href="/forum/delete/{{ post_detail.id }}"
-                        class="btn-1 s-delete">Delete</a>
-                    {% endif %}
-                    {% for person in post_detail.trip_members.all %}
-
-                    {% if  request.user == person %}
-                    {% if request.user != post_detail.post_author %}
-                    <a href="/forum/unlike/{{ post_detail.id }}" class="btn-1 s-delete">unlike</a>
-                    {% endif %}
-                    {% endif %}
-
-                    {% empty %}
-                    {% if request.user != post_detail.post_author %}
-                    <a href="/forum/like/{{ post_detail.id }}" class="btn-1 green">Like</a>
-                    {% endif %}
-                    {% endfor %}
+{% load static %}
+<style>
+    body {
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: black;
+        background-position-x: center;
+    }
+</style>
+{% if post_detail.color == 'red' %}
+<style>
+    body {
+        background-image: url(/static/forum/images/siege.jpg);
+    }
+</style>
+{% elif post_detail.color == 'blue' %}
+<style>
+    body {
+        background-image: url(/static/forum/images/gta.jpg);
+    }
+</style>
+{% elif post_detail.color == 'orange' %}
+<style>
+    body {
+        background-image: url(/static/forum/images/ot.jpg);
+    }
+</style>
+{% elif post_detail.color == 'black' %}
+<style>
+    body {
+        background-image: url(/static/forum/images/black.jpg);
+    }
+</style>
+{% endif %}
+<div id="main">
 
 
-                </th>
+    <h1 style="text-align: center;">{{ post_detail.title }}</h1>
 
-            </tr>
-
-            <tr>
-                <td class="center">{{ post_detail.title }}</td>
+    <table class="table no-transparency">
+        <tr class="first-head">
 
 
-                <td class="center"><a href="/forum/user/{{post_detail.post_author.id}}"
-                        class="home-link-authors">{{ post_detail.post_author.first_name }}</a></td>
-                <td class="center"><span class="likes">{{ post_detail.liked_members.count }}</span></td>
-                <td class="center">{{ post_detail.created_at }}</td>
-
-                <td> </td>
-
-            </tr>
-
-        </table>
-        <div id="review-content">
-            <br>
-            {{ post_detail.body|safe }}
-        </div>
-        <div id="joined-users">
-            {% if post_detail.liked_members.count > 0 %}
-            <h3>{{ post_detail.title }} is liked by :<br></h3>
-            {% else %}
-            <br><br>
-            {% endif %}
-            {% for m in post_detail.liked_members.all %}
-            <p><a href="/forum/user/{{m.id}}" class="profile">{{m.first_name}}</a></p>
-            {% endfor %}
-
-        </div>
-
-
-        <table class="profile-comments-table details-comments">
-
-            <tr>
-                <th> </th>
-
-
-
-            </tr>
-            {% for c in comments reversed %}
-            {% if post_detail.id == c.post_id %}
-            <tr>
-                <td>
-                    <div class="by"><a href="/forum/user/{{c.comment_author.id}}"
-                            class="profile-link-comments">{{ c.comment_author.first_name }}</a>
-                        |
-                        <span class="dt">{{ c.created_at }}</span></div>
-                    <div id="text">{{ c.comment }}
-                    </div><br>
-
-                    <div id="comment-control">{% if request.user.id == c.comment_author.id %}
-                        <a href="/forum/delete_profile_comment/{{ c.id }}/{{ s.post_author.id }}"
-                            class="btn-1 s-delete">Delete</a>{% endif %}
+            <th colspan="4">
+                <div id="details-avatar-wrapper">
+                    <div id="details-avatar">{% avatar post_detail.post_author.username 50 %}</div>
+                    <div id="roles-details-page">
+                        {% if post_detail.post_author.groups.all %}
+                        {% for group in post_detail.post_author.groups.all %}
+                        {% if group.name == 'Staff' %}
+                        <a href="/forum/user/{{post_detail.post_author.id}}"
+                            class="home-link-authors post-detail-author">{{ post_detail.post_author.username }}</a><span
+                            class="staff">{{ group }}</span>
+                        {% elif group.name == 'Admin' %}
+                        <a href="/forum/user/{{post_detail.post_author.id}}"
+                            class="home-link-authors post-detail-author">{{ post_detail.post_author.username }}</a><span
+                            class="admin">{{ group }}</span>
+                        {% elif group.name == 'Crook'  %}
+                        <a href="/forum/user/{{post_detail.post_author.id}}"
+                            class="home-link-authors post-detail-author">{{ post_detail.post_author.username }}</a><span
+                            class="user">{{ group }}</span>
+                        {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        <a href="/forum/user/{{post_detail.post_author.id}}"
+                            class="home-link-authors post-detail-author">{{ post_detail.post_author.username }}</a><span
+                            class="scrub">{{ group }}</span>
+                        {% endif %}
 
                     </div>
 
-                </td>
+                </div>
+            </th>
 
 
 
-            </tr>
 
 
-            {% endif %}
-            {% endfor %}
-            <td>
-                <div id="comments">
-                    <div class="comment-box">
-                        <h3>Comment on {{ post_detail.title }}:</h1>
+        </tr>
+
+        <tr>
+            <td class="cc">
+                {% if request.user.id == post_detail.post_author.id or request.user.is_staff %}
+                <div class="post_controls pc-2">
+                    <div id="slideToggle" class="main_divs">
+                        <button class="slideDown"></button>
+                        <div class="slideDownHidden">
 
 
-                            <form
-                                action="/forum/add_profile_comment/{{ post_detail.id }}/{{ post_detail.post_author.id }}"
-                                method="POST">
-                                {% csrf_token %}
-                                <textarea rows="4" cols="50" name="comment" required></textarea>
-                                <br>
-                                <input type="submit" value="Add Comment" class="btn-1 green">
+                            {% if request.user.id == post_detail.post_author.id  or request.user.is_staff %}<a
+                                href="/forum/edit/{{ post_detail.id }}" class="btn-1">Edit</a>
+                            <a href="/forum/delete/{{ post_detail.id }}" class="btn-1 s-delete">Delete</a>{% endif %}
 
-                            </form>
+                            {% if  request.user.is_staff %}
+                            {% if  request.user in post_detail.stickied.all %}
+                            <a href="/forum/unstickied/{{ post_detail.id }}" class="btn-1">Unsticky</a>
+                            {% else %}
+                            <a href="/forum/stickied/{{ post_detail.id }}" class="btn-1 green">Sticky</a>
+                            {% endif %}
+                            {% endif %}
+
+
+
+
+
+                        </div>
                     </div>
                 </div>
+                {% endif %}
             </td>
-        </table>
 
 
 
 
+            <td class="ellipsis titles-margin lt-bg"><span class="title-link"><a
+                        href="/forum/details/{{ post_detail.id }}"
+                        class="title-link">{{ post_detail.title }}</a></span><span class="created_at">Added on
+                    {{ post_detail.created_at }}</span>
+            </td>
 
+            <td class="center small"><span class="likes">{{ post_detail.comments.count }}</span> <span
+                    class="sub_title">Comments</span> </td>
+            <td class="center small"><span class="likes">{{ post_detail.liked_members.count }}</span> <span
+                    class="sub_title">Likes</span></td>
+
+
+
+        </tr>
+
+    </table>
+    <div id="review-content" class="details-content">
+        <br>
+        {{ post_detail.body|safe }}
+    </div>
+    <div id="joined-users">
+        {% if post_detail.liked_members.count > 0 %}
+        <h3>{{ post_detail.title }} is liked by :<br></h3>
+        {% else %}
+        <br><br>
+        {% endif %}
+        {% for m in post_detail.liked_members.all %}
+        <p><a href="/forum/user/{{m.id}}" class="profile">{{m.username}}</a></p>
+        {% endfor %}
 
     </div>
 
-    {% else %}
-    <div id="login-box">
-        <div id="login-inner">
-            <span class="please-login">
-                You need to be logged in to see this page.
-                <a href="/"><span class="btn-1">Login</span></a></span>
-        </div>
-    </div>
-    {% endif %}
-    <script>
-        $(document).ready(function () {
-            $('#main').fadeIn('slow');
-        });
-    </script>
-</body>
 
-</html>
+    <table class="profile-comments-table details-comments">
+
+        <tr>
+            <th> </th>
+
+
+
+        </tr>
+        {% for c in comments %}
+        {% if post_detail.id == c.post_id %}
+        <tr>
+            <td>
+                <div class="by">
+                    <a href="/forum/user/{{c.comment_author.id}}">
+                        <div id="comments-avatar">{% avatar c.comment_author.username 26 %}
+                        </div>
+                    </a><a href="/forum/user/{{c.comment_author.id}}"
+                        class="profile-link-comments">{{ c.comment_author.username }}</a>
+                    |
+                    <span class="dt">{{ c.created_at }}</span>
+                </div>
+                <div id="text">{{ c.comment| safe }}
+                </div><br>
+
+                <div id="comment-control">{% if request.user.id == c.comment_author.id or request.user.is_staff %}
+                    <a href="/forum/delete_profile_comment/{{ c.id }}/{{ post_detail.id }}"
+                        class="btn-1 s-delete">Delete</a>{% endif %}
+
+                </div>
+
+            </td>
+
+
+
+        </tr>
+
+
+        {% endif %}
+        {% endfor %}
+        <td>
+            {% if request.user.groups.all %}
+            <div id="comments">
+                <div class="comment-box">
+                    <h3>Comment on {{ post_detail.title }}:</h1>
+
+
+                        <form action="/forum/add_profile_comment/{{ post_detail.id }}/{{ post_detail.post_author.id }}"
+                            method="POST">
+                            {% csrf_token %}
+                            <textarea name="comment"></textarea>
+                            <br>
+                            <input type="submit" value="Add Comment" class="btn-1 green">
+
+                        </form>
+                </div>
+            </div>
+            {% else %}
+            Only approved memebers can post comments.
+            {% endif %}
+        </td>
+    </table>
+
+
+
+
+
+
+</div>
+<script src="{% static '/js/tinymce.js' %}"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea',
+        resize: 'both',
+        menubar: 'none',
+        statusbar: true,
+        plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste',
+            'emoticons',
+            'autoresize',
+            'autolink',
+            'autosave',
+            'media'
+        ],
+        default_link_target: '_blank',
+        autosave_ask_before_unload: false,
+        mobile: {
+            theme: 'silver'
+        },
+        toolbar: 'restoredraft | bold italic | link image | media | emoticons'
+        // toolbar: "restoredraft | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | media | emoticons"
+    });
+</script>
+{% endblock %}

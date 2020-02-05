@@ -1,44 +1,63 @@
 {% extends 'base.html' %}
 
-{% block title %}Users{% endblock %}
-
 {% block content %}
+{% include 'videobg.html' %}
+<style>
+    .members {
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
 
-<h1>Users:</h1>
+    .members:hover {
+        background: #8c1c1c !important;
+        border-bottom: 4px solid #b60000;
+        margin-bottom: -4px;
+    }
+</style>
+<div id="main" class="main-css">
+    <h2>Members</h2>
 
-<table class="table">
-    <tr>
-        <th>Name</th>
-        <th>Group</th>
-        <th>Active</th>
-        <th>Join Date</th>
-        <th>Last Login</th>
-    </tr>
-    {% for user in users %}
-    <tr>
-        <td class="center">{{ user }}</td>
-        <td class="center indent">
-            {% for group in user.groups.all %}
-            {% if group.name == 'Staff' %}
-            <span class="staff">{{ group }}</span>
-            {% elif group.name == 'Admin' %}
-            <span class="admin">{{ group }}</span>
-            {% elif group.name == 'Users'  %}
-            <span class="user">{{ group }}</span>
-            {% endif %}
-            {% endfor %}
-        </td>
-        <td class="center indent">
-            {% if user.is_active == True %}
-            <span class="active"> {{user.is_active }}</span>
-            {% elif user.is_active == False %}
-            <span class="inactive"> {{user.is_active }}</span>
-            {% endif %}
-        </td>
-        <td class="center">{{ user.date_joined.date }}</td>
-        <td class="center">{{ user.last_login.date }}</td>
-    </tr>
-    {% endfor %}
-</table>
+    <table class="table-users">
+        <tr>
+            <th>Name</th>
+            <th>Group</th>
+            <th>Active</th>
+            <th class="tr-mobile-right">Join Date</th>
+            <th class="tr-mobile-right">Last Login</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td class="center">{{ user }}</td>
+            <td class="center indent">
+                {% if user.groups.all %}
+                {% for group in user.groups.all %}
+                {% if group.name == 'Staff' %}
+                <span class="staff">{{ group }}</span>
+                {% elif group.name == 'Admin' %}
+                <span class="admin">{{ group }}</span>
+                {% elif group.name == 'Crook'  %}
+                <span class="user">{{ group }}</span>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <span class="scrub">Scrub</span>
+                {% endif %}
 
+
+
+
+            </td>
+            <td class="center indent">
+                {% if user.is_active == True %}
+                <span class="active"> {{user.is_active }}</span>
+                {% elif user.is_active == False %}
+                <span class="inactive"> {{user.is_active }}</span>
+                {% endif %}
+            </td>
+            <td class="center tr-mobile-right">{{ user.date_joined.date }}</td>
+            <td class="center tr-mobile-right">{{ user.last_login.date }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
