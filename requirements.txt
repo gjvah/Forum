@@ -3,4 +3,4 @@ django-tinymce==2.8.0
 python-dateutil==2.8.1
 pytz==2019.3
 six==1.13.0
-sqlparse==0.3.0
+sqlparse==0.4.4
